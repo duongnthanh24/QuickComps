@@ -6,7 +6,10 @@ import streamlit as st
 st.set_page_config(
         page_title="Quick Comps Table")
 st.header("Quick Comps Table")
-openai.api_key = "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"
+
+api = st.text_input('Enter API')
+
+openai.api_key = api
 
 # Initialize chat history
 if "messages" not in st.session_state:
