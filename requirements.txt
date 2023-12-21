@@ -1,0 +1,4 @@
+openai==0.28.1
+pandas==2.1.4
+pandasql==0.7.3
+streamlit==1.27.2
