@@ -34,6 +34,7 @@ if prompt := st.chat_input("Top 10 banks in Vietnam by Revenue"):
     
     q1 = response
     if "SELECT" in response:
+        response = "SELECT" + response.split("SELECT")[1]
         st.session_state.messages.append({"role":"assistant","content": response})
         df2 = ps.sqldf(q1, locals())
         if len(df2) == 0:
@@ -49,15 +50,17 @@ if prompt := st.chat_input("Top 10 banks in Vietnam by Revenue"):
             q1 = response
             df3 = ps.sqldf(q1, locals())
             with st.chat_message("assistant"):
-                st.markdown(response)
+                #st.markdown(response)
                 df3
+                st.download_button("Export",data=pd.DataFrame.to_csv(df3,index=False), mime='text/csv')
         else:
             with st.chat_message("assistant"):
-                st.markdown(response)
+                #st.markdown(response)
                 df2
+                st.download_button("Export",data=pd.DataFrame.to_csv(df2,index=False), mime='text/csv')
                 
     else:
         with st.chat_message("assistant"):
-            st.markdown(response)
+            #st.markdown(response)
             st.markdown("sorry, error, try again :(")
 
