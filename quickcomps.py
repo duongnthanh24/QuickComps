@@ -19,7 +19,8 @@ st.set_page_config(
         page_title="Quick Comps Table")
 #st.header("Quick Comps Table")
 
-api = st.text_input('Enter API', type="password")
+#api = st.text_input('Enter API', type="password")
+api = st.secrets["api"]
 
 openai.api_key = api
 
