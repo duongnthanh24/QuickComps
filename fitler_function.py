@@ -6,7 +6,17 @@ from pandas.api.types import (
 )
 import pandas as pd
 import streamlit as st
+import re
 
+response = """SELECT Name, Country, Description, Primary_Industry, Detailed_Description, Detailed_Product, Revenue, EBITDA FROM df WHERE Primary_Industry = 'Brewers' AND Country = 'China' OR Detailed_Description LIKE '%coffee%' OR Detailed_Product LIKE '%coffee%'"""
+response
+pattern = r"Country\s*=\s*'([^']+)'" 
+matches = re.findall(pattern, response)
+df = pd.read_csv('table_g.csv',encoding = "ISO-8859-1")
+sql_select_list = []
+for i in df.columns:
+    if i in response:
+        sql_select_list.append(i)
 
 def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -18,10 +28,10 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify = st.checkbox("Add filters")
+    #modify = st.checkbox("Add filters")
 
-    if not modify:
-        return df
+    #if not modify:
+    #    return df
 
     df = df.copy()
 
@@ -39,7 +49,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     modification_container = st.container()
 
     with modification_container:
-        to_filter_columns = st.multiselect("Filter dataframe on", df.columns)
+        to_filter_columns = st.multiselect("Filter dataframe on", df.columns,sql_select_list)
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
             # Treat columns with < 10 unique values as categorical
@@ -76,7 +86,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                     df = df.loc[df[column].between(start_date, end_date)]
             else:
                 user_text_input = right.text_input(
-                    f"Substring or regex in {column}",
+                    f"Substring or regex in {column}",matches[0]
                 )
                 if user_text_input:
                     df = df[df[column].astype(str).str.contains(user_text_input)]
@@ -84,5 +94,6 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-df = pd.read_csv('table_f.csv',encoding = "ISO-8859-1")
+
 st.dataframe(filter_dataframe(df))
+
